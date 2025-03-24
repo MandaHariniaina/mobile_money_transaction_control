@@ -1,5 +1,6 @@
 import os
 import csv
+import datetime
 
 def filter_invalid_transactions(input_dir, output_file, output_file_type_03):
     """
@@ -30,6 +31,8 @@ def filter_invalid_transactions(input_dir, output_file, output_file_type_03):
                     
                     for row in reader:
                         if len(row) >= 2 and not row[1].strip():
+                            if len(row) >= 8 and row[7].strip() == "01/01/2000":
+                                row[7] = ""
                             writer_invalid_transactions.writerow(row)
                         if len(row) >= 8 and (row[1].strip() == "01" or row[1].strip() == "02" or (row[1].strip() == "03" and row[7].strip() and row[7].strip() != "01/01/2000")):
                             if (row[7].strip() == "01/01/2000"):
@@ -64,15 +67,10 @@ def extract_type_03_missing_date_effet(input_dir, output_file, output_file_inval
                             writer.writerow(row)  # Write to output file
 
 if __name__ == "__main__":
-    input_directory = os.getcwd()  # Change this to the current directory
-    output_file_invalid = "invalid_transactions.csv" # No type transaction specified
-    output_file_type_03 = "type_03_missing_date_effet.csv" # Type 03 with no date effect
-    
-    # if os.path.exists(output_file_invalid):
-    #     os.remove(output_file_invalid)
-    # if os.path.exists(output_file_type_03):
-    #     os.remove(output_file_type_03)
-    # output_file_type_03 = "type_03_missing_date_effet.csv" # Type 03 with no date effect
+    input_directory = os.getcwd() + "\\to_treat"  # Change this to the current directory
+    output_file_invalid = "erreurs_transaction_mvola.csv" # No type transaction specified
+    today = datetime.date.today()
+    output_file_type_03 = f"{today.strftime('%d-%m-%Y')}_type_03_missing_date_effet.csv" # Type 03 with no date effect
     
     extract_type_03_missing_date_effet(input_directory, output_file_type_03, output_file_invalid)
     filter_invalid_transactions(input_directory, output_file_invalid, output_file_type_03)
