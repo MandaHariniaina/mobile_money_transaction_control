@@ -56,6 +56,10 @@ def transform_excel_into_csv(input_dir):
                 
                 df.to_csv(csv_file_path, sep=';', index=False, encoding='utf-8')
                 print(f"Saved: {csv_file_path}")
+            
+            # Delete the Excel file after transformation
+            os.remove(excel_file_path)
+            print(f"Deleted: {excel_file_path}")
 
 if __name__ == "__main__":
     input_directory = os.getcwd() + "\\mvola\\to_treat"
