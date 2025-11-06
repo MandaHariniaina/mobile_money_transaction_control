@@ -51,6 +51,12 @@ def transform_excel_into_csv(input_dir):
             xls = pd.ExcelFile(excel_file_path)
             for i, sheet_name in enumerate(xls.sheet_names, start=1):
                 df = xls.parse(sheet_name)
+                
+                # Convert date columns from yyyy-mm-dd to dd/mm/yyyy format
+                for col in df.columns:
+                    if df[col].dtype == 'datetime64[ns]' or 'date' in col.lower():
+                        df[col] = pd.to_datetime(df[col], errors='coerce').dt.strftime('%d/%m/%Y')
+                
                 csv_file_name = f"{base_name}.csv"
                 csv_file_path = os.path.join(input_dir, csv_file_name)
                 
